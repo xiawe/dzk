@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DZK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style>
+#id-canvas{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+</style>
+<body>
+<canvas id='id-canvas' width="500" height="400" style="border:1px solid black"></canvas>
+<script>
+    var log = console.log.bind(console)
+
+    var imgFromPath = function(path) {
+        var img = new Image()
+        img.src = path
+        return img
+    }
+
+    var position = [
+            [
+                [50, 50],
+            ],
+            [
+                [50, 50],
+                [200, 50],
+            ],
+            [
+                [50, 50],
+                [150, 50],
+                [300, 50, 2],
+            ],
+        ]
+
+    var Paddle = function() {
+        var image = imgFromPath('paddle.png')
+        var o = {
+            image: image,
+            x: 200,
+            y: 300,
+            speed: 13,
+        }
+        o.moveLeft = function() {
+            o.x -= o.speed
+        }
+        o.moveRight = function() {
+            o.x += o.speed
+        }
+        o.collide = function(a) {
+            return rectIntersect(a, o)
+        }
+        return o
+    }
+
+    var rectIntersect = function(a, b) {
+        var o = a
+        var thing = b
+        if (o.x < thing.x && o.y < thing.y) {
+            if (thing.x - o.x < o.image.width && thing.y - o.y < o.image.height) {
+                return true
+            }
+        }
+        if (o.x > thing.x && o.y < thing.y) {
+            if (o.x - thing.x < thing.image.width && thing.y - o.y < o.image.height) {
+                return true
+            }
+        }
+        return false
+    }
+
+    var Ball = function() {
+        var image = imgFromPath('ball.png')
+        var o = {
+            image: image,
+            x: 350,
+            y: 100,
+            speedX: 4,
+            speedY: 4,
+            fired: false,
+        }
+        o.fire = function() {
+            o.fired = true
+        }
+        
+        // o.collide = function(thing) {
+        //     if (o.x < thing.x && o.y < thing.y) {
+        //         if (thing.x - o.x < o.image.width && thing.y - o.y < o.image.height) {
+        //             log('球撞左上角', thing)
+        //             return true
+        //         }
+        //     }
+        //     if (o.x > thing.x && o.y < thing.y) {
+        //         if (o.x - thing.x < thing.image.width && thing.y - o.y < o.image.height) {
+        //             log('球撞右上角', thing)
+        //             return true
+        //         }
+        //     }
+        //     if (o.x < thing.x && o.y > thing.y) {
+        //         if (thing.x - o.x < o.image.width && o.y - thing.y < thing.image.height) {
+        //             log('球撞左下角', thing)
+        //             return true
+        //         }
+        //     }
+        //     if (o.x > thing.x && o.y > thing.y) {
+        //         if (o.x - thing.x < thing.image.width && o.y - thing.y < thing.image.height) {
+        //             log('球撞右下角', thing)
+        //             return true
+        //         }
+        //     }
+        //     return false
+        // }
+        o.bounce = function() {
+            o.speedY = -o.speedY
+        }
+        o.move = function() {
+            if (o.fired) {
+                if (o.x >= 500 || o.x <= 0) {
+                    o.speedX = -o.speedX
+                }
+                if (o.y >= 400 || o.y <= 0) {
+                    o.speedY = -o.speedY
+                }
+                o.x += o.speedX
+                o.y += o.speedY
+            }
+        }
+        return o
+    }
+
+    var loadLevel = function(k) {
+        var p = position[k]
+        log('p', p)
+        var blocks = []
+        for (var i = 0; i < p.length; i++) {
+            var block = Block(p[i]) 
+            log(i, block)
+            blocks.push(block)           
+        }
+        return blocks
+    }
+
+    var Block = function(position) {
+        var p = position
+        var image = imgFromPath('block.png')
+        var o = {
+            image: image,
+            w: 50,
+            h: 20,
+            x: p[0],
+            y: p[1],
+            alive: true,
+            lifes: p[2] || 1,
+        }
+        o.collide = function(b) {
+            return o.alive && (rectIntersect(b, o) || rectIntersect(o, b))
+        }
+        o.kill = function() {
+            log('lifes', o.lifes)
+            o.lifes--
+            if (o.lifes < 1) {
+                o.alive = false
+            }
+        }
+        return o
+    }
+
+    var Game = function() {
+        var g = {
+            actions: {},
+            keydowns: {},
+        }
+        var canvas = document.querySelector('#id-canvas')
+        var context = canvas.getContext('2d')
+        g.canvas = canvas
+        g.context = context
+        g.drawImg = function(gameImage) {
+            g.context.drawImage(gameImage.image, gameImage.x, gameImage.y)
+        }
+        window.addEventListener('keydown', function(event) {
+            g.keydowns[event.key] = true
+        })
+        window.addEventListener('keyup', function(event) {
+            g.keydowns[event.key] = false
+        })
+        g.registerAction = function(key, callback) {
+            g.actions[key] = callback
+        }
+        setInterval(function() {
+            var actions = Object.keys(g.actions)
+            for (var i = 0; i < actions.length; i++) {
+                var key = actions[i]
+                if (g.keydowns[key]) {
+                    g.actions[key]()
+                }            
+            }
+            g.update()
+            // clear
+            context.clearRect(0, 0, canvas.width, canvas.height)
+            // draw
+            g.draw()
+        }, 1000 / 50)
+        return g
+    }
+
+    var blocks = []
+    var enableDebugMode = function(enable) {
+        if (!enable) {
+            return
+        }
+        window.paused = false
+        window.addEventListener('keydown', function(event) {
+            var k = event.key
+            if (k == 'p') {
+                window.paused = !window.paused
+            } else if ('01234567'.includes(Number(k))) {
+                blocks = loadLevel(Number(k))
+            }
+        })
+    }
+
+    var __main = function() {
+        enableDebugMode(true)
+
+        var paddle = Paddle()
+        var ball = Ball()
+        
+        blocks = loadLevel(2)
+        // log('blocks', blocks)
+        var game = Game()
+
+        game.registerAction('a', function() {
+            paddle.moveLeft()
+        })
+        game.registerAction('d', function() {
+            paddle.moveRight()
+        })
+        game.registerAction('f', function() {
+            ball.fire()
+        })
+        game.update = function() {
+            if (window.paused) {
+                return
+            }
+            ball.move()
+            if (paddle.collide(ball)) {
+                ball.bounce()
+            }
+            for (var i = 0; i < blocks.length; i++) {
+                var b = blocks[i]
+                if (b.collide(ball)) {
+                    ball.bounce()
+                    b.kill()
+                }
+            }
+        }
+        game.draw = function() {
+            game.drawImg(paddle)
+            game.drawImg(ball)
+            // game.drawImg(block)
+            for (var i = 0; i < blocks.length; i++) {
+                if (blocks[i].alive) {
+                    game.drawImg(blocks[i])              
+                }
+            }
+        }
+    }
+    __main()
+</script>
+</body>
+</html>
