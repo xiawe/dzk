@@ -19,7 +19,8 @@ var Game = function() {
     g.registerAction = function(key, callback) {
         g.actions[key] = callback
     }
-    setInterval(function() {
+    var runLoop = function() {
+        // log('fps', window.fps)
         var actions = Object.keys(g.actions)
         for (var i = 0; i < actions.length; i++) {
             var key = actions[i]
@@ -32,6 +33,27 @@ var Game = function() {
         context.clearRect(0, 0, canvas.width, canvas.height)
         // draw
         g.draw()
-    }, 1000 / 50)
+        setTimeout(function() {
+            runLoop()
+        }, 1000 / 30)
+    }
+    setTimeout(function() {
+        runLoop()
+    }, 1000 / fps)
+    // setInterval(function() {
+    //     log('fps', window.fps)
+    //     var actions = Object.keys(g.actions)
+    //     for (var i = 0; i < actions.length; i++) {
+    //         var key = actions[i]
+    //         if (g.keydowns[key]) {
+    //             g.actions[key]()
+    //         }            
+    //     }
+    //     g.update()
+    //     // clear
+    //     context.clearRect(0, 0, canvas.width, canvas.height)
+    //     // draw
+    //     g.draw()
+    // }, 1000 / window.fps)
     return g
 }

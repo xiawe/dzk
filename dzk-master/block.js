@@ -11,7 +11,7 @@ var Block = function(position) {
         lifes: p[2] || 1,
     }
     o.collide = function(b) {
-        return o.alive && (rectIntersect(b, o) || rectIntersect(o, b))
+        return o.alive && (isIntersect(b, o) || isIntersect(o, b))
     }
     o.kill = function() {
         log('lifes', o.lifes)

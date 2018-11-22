@@ -20,11 +20,12 @@
 }
 </style>
 <body>
+<input class="slide-control" type="range" value="0">
 <canvas id='id-canvas' width="500" height="400" style="border:1px solid black"></canvas>
 <script>
     var loadLevel = function(k) {
         var p = position[k]
-        log('p', p)
+        // log('p', p)
         var blocks = []
         for (var i = 0; i < p.length; i++) {
             var block = Block(p[i]) 
@@ -48,6 +49,12 @@
                 blocks = loadLevel(Number(k))
             }
         })
+        var input = document.querySelector('.slide-control')
+        window.fps = 30
+        window.addEventListener('input', function() {
+            // log('input', input.value)
+            window.fps = input.value
+        })
     }
 
     var __main = function() {
@@ -58,7 +65,7 @@
         
         blocks = loadLevel(2)
         // log('blocks', blocks)
-        var game = Game()
+        var game = Game(30)
 
         game.registerAction('a', function() {
             paddle.moveLeft()

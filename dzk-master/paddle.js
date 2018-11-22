@@ -13,7 +13,7 @@ var Paddle = function() {
         o.x += o.speed
     }
     o.collide = function(a) {
-        return rectIntersect(a, o)
+        return isIntersect(a, o)
     }
     return o
 }

@@ -6,7 +6,7 @@ var imgFromPath = function(path) {
     return img
 }
 
-var rectIntersect = function(a, b) {
+var isIntersect = function(a, b) {
     var o = a
     var thing = b
     if (o.x < thing.x && o.y < thing.y) {
