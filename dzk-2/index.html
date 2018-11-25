@@ -23,7 +23,7 @@
 <input class="slide-control" type="range" value="0">
 <canvas id='id-canvas' width="500" height="400" style="border:1px solid black"></canvas>
 <script>
-    var loadLevel = function(k) {
+    var  = function(k) {
         var p = position[k]
         // log('p', p)
         var blocks = []
@@ -46,7 +46,7 @@
             if (k == 'p') {
                 window.paused = !window.paused
             } else if ('01234567'.includes(Number(k))) {
-                blocks = loadLevel(Number(k))
+                blocks = (Number(k))
             }
         })
         var input = document.querySelector('.slide-control')
