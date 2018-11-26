@@ -1,7 +1,8 @@
-var Game = function() {
+var Game = function(fps, images) {
     var g = {
         actions: {},
         keydowns: {},
+        imgs: {},
     }
     var canvas = document.querySelector('#id-canvas')
     var context = canvas.getContext('2d')
@@ -42,11 +43,32 @@ var Game = function() {
     var names = Object.keys(images)
     var loads = []
     for (var i = 0; i < names.length; i++) {
-        if (images[name]) {
+        var let = names[i]
+        log('name', i, name)
+        var path = images[name]
+        let img = new Image()
+        img.src = path 
+        img.onload = function() {
+            log('inner name', i, name)
+            g.imgs[name] = img
+            // imgs.push(img)
             loads.push(1)
+            if (g.imgs.length == loads.length) {
+                g.run()
+            }
         }
-
     }
+
+    g.imgByName = function(name) {
+        var img = g.imgs[name]
+        var image = {
+            image: img,
+            w: img.width,
+            h: img.height
+        }
+        return image
+    }
+
     g.run = function() {
         setTimeout(function() {
             runLoop()
@@ -54,11 +76,3 @@ var Game = function() {
     }
     return g
 }
-    console.log('very outside', b)
-    for (var i = 0; i < 5; i++) {
-        var b = i
-        console.log('outside', b)     
-        setTimeout(function() {
-            console.log('inside',b)
-        }, 2000)   
-    }
