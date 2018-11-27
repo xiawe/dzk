@@ -1,4 +1,4 @@
-var Game = function(fps, images) {
+var Game = function(fps, images, runCallback) {
     var g = {
         actions: {},
         keydowns: {},
@@ -41,35 +41,41 @@ var Game = function(fps, images) {
     }
     // 载入所有图片后，再执行
     var names = Object.keys(images)
+    // log('names', names)
     var loads = []
     for (var i = 0; i < names.length; i++) {
-        var let = names[i]
-        log('name', i, name)
+        let name = names[i]
+        // log('name', i, name)
         var path = images[name]
         let img = new Image()
         img.src = path 
         img.onload = function() {
-            log('inner name', i, name)
+            // log('inner name', i, name)
             g.imgs[name] = img
             // imgs.push(img)
             loads.push(1)
-            if (g.imgs.length == loads.length) {
+            // log('g.imgs.length', g.imgs, names.length)
+            // log('length', loads.length, names.length)
+            if (loads.length == names.length) {
                 g.run()
+                log('or g.imgs', g.imgs)
             }
         }
     }
 
     g.imgByName = function(name) {
+        log('g.imgs', g.imgs)
         var img = g.imgs[name]
         var image = {
             image: img,
             w: img.width,
-            h: img.height
+            h: img.height,
         }
         return image
     }
 
     g.run = function() {
+        runCallback()
         setTimeout(function() {
             runLoop()
         }, 1000 / fps)

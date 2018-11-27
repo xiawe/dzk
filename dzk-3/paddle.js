@@ -1,6 +1,6 @@
 var Paddle = function(game) {
     var o = game.imgByName('paddle')
-    log('paddle name', image)
+    // log('paddle name', o)
     o.x = 200
     o.y = 300
     o.speed = 13

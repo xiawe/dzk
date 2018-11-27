@@ -1,9 +1,9 @@
-var loadLevel = function(k) {
+var loadLevel = function(k, game) {
     var p = position[k]
     // log('p', p)
     var blocks = []
     for (var i = 0; i < p.length; i++) {
-        var block = Block(p[i]) 
+        var block = Block(p[i], game) 
         log(i, block)
         blocks.push(block)           
     }
@@ -11,7 +11,7 @@ var loadLevel = function(k) {
 }
 
 var blocks = []
-var enableDebugMode = function(enable) {
+var enableDebugMode = function(enable, game) {
     if (!enable) {
         return
     }
@@ -21,14 +21,14 @@ var enableDebugMode = function(enable) {
         if (k == 'p') {
             window.paused = !window.paused
         } else if ('01234567'.includes(Number(k))) {
-            blocks = loadLevel(Number(k))
+            blocks = loadLevel(Number(k), game)
         }
     })
-    var input = document.querySelector('.slide-control')
     window.fps = 30
-    window.addEventListener('input', function() {
-        // log('input', input.value)
-        window.fps = input.value
+    document.querySelector('.slide-control').addEventListener('input', function(event) {
+        var input = event.target
+        log('slide input', event, input, input.value)
+        window.fps = Number(input.value)
     })
 }
 
@@ -38,53 +38,55 @@ var __main = function() {
         ball: 'ball.png',
         block: 'block.png',
     }
-    enableDebugMode(true)
     
-    var game = Game(30,images)
-    log('game o', game)
+    var game = Game(30, images, function() {
+        log('game o', game)
 
-    var paddle = Paddle(game)
-    var ball = Ball(game)
-    
-    blocks = loadLevel(2)
-    // log('blocks', blocks)
-    var score = 0
-    game.registerAction('a', function() {
-        paddle.moveLeft()
-    })
-    game.registerAction('d', function() {
-        paddle.moveRight()
-    })
-    game.registerAction('f', function() {
-        ball.fire()
-    })
-    game.update = function() {
-        if (window.paused) {
-            return
-        }
-        ball.move()
-        if (paddle.collide(ball)) {
-            ball.bounce()
-        }
-        for (var i = 0; i < blocks.length; i++) {
-            var b = blocks[i]
-            if (b.collide(ball)) {
+        var paddle = Paddle(game)
+        var ball = Ball(game)
+        
+        blocks = loadLevel(2, game)
+        // log('blocks', blocks)
+        var score = 0
+        game.registerAction('a', function() {
+            paddle.moveLeft()
+        })
+        game.registerAction('d', function() {
+            paddle.moveRight()
+        })
+        game.registerAction('f', function() {
+            ball.fire()
+        })
+        game.update = function() {
+            if (window.paused) {
+                return
+            }
+            ball.move()
+            if (paddle.collide(ball)) {
                 ball.bounce()
-                b.kill()
-                score += 100
+            }
+            for (var i = 0; i < blocks.length; i++) {
+                var b = blocks[i]
+                if (b.collide(ball)) {
+                    ball.bounce()
+                    b.kill()
+                    score += 100
+                }
             }
         }
-    }
-    game.draw = function() {
-        game.drawImg(paddle)
-        game.drawImg(ball)
-        // game.drawImg(block)
-        for (var i = 0; i < blocks.length; i++) {
-            if (blocks[i].alive) {
-                game.drawImg(blocks[i])              
+        game.draw = function() {
+            game.drawImg(paddle)
+            game.drawImg(ball)
+            // game.drawImg(block)
+            for (var i = 0; i < blocks.length; i++) {
+                if (blocks[i].alive) {
+                    game.drawImg(blocks[i])              
+                }
             }
+            game.context.fillText('分数：' + score, 10, 380)
         }
-        game.context.fillText('分数：' + score, 10, 380)
-    }
+    })
+
+    enableDebugMode(true, game)
 }
 __main()
