@@ -11,7 +11,7 @@ var loadLevel = function(k, game) {
 }
 
 var blocks = []
-var enableDebugMode = function(enable, game, ball) {
+var enableDebugMode = function(enable, game) {
     if (!enable) {
         return
     }
@@ -25,30 +25,10 @@ var enableDebugMode = function(enable, game, ball) {
         }
     })
     window.fps = 30
-    // 调整帧率（速度）
     document.querySelector('.slide-control').addEventListener('input', function(event) {
         var input = event.target
         // log('slide input', event, input, input.value)
         window.fps = Number(input.value)
-    })
-    // 拖动球
-    var bMousedown = false
-    window.addEventListener('mousedown', function(event) {
-        log('mousedown', event)
-        bMousedown = true
-    })
-
-    window.addEventListener('mouseup', function() {
-        log('mouseup', event)
-        bMousedown = false
-    })
-
-    document.querySelector('#id-canvas').addEventListener('mousemove', function(event) {
-        if (bMousedown) {
-            log('mousemove', event)
-            ball.x = event.clientX
-            ball.y = event.clientY
-        }
     })
 }
 
@@ -64,11 +44,9 @@ var __main = function() {
 
         var paddle = Paddle(game)
         var ball = Ball(game)
+        
         blocks = loadLevel(2, game)
         // log('blocks', blocks)
-
-        enableDebugMode(true, game, ball)
-
         var score = 0
         game.registerAction('a', function() {
             paddle.moveLeft()
@@ -109,5 +87,6 @@ var __main = function() {
         }
     })
 
+    enableDebugMode(true, game)
 }
 __main()
