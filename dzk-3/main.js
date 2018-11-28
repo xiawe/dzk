@@ -27,7 +27,7 @@ var enableDebugMode = function(enable, game) {
     window.fps = 30
     document.querySelector('.slide-control').addEventListener('input', function(event) {
         var input = event.target
-        log('slide input', event, input, input.value)
+        // log('slide input', event, input, input.value)
         window.fps = Number(input.value)
     })
 }

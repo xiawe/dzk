@@ -37,7 +37,7 @@ var Game = function(fps, images, runCallback) {
         g.draw()
         setTimeout(function() {
             runLoop()
-        }, 1000 / fps)
+        }, 1000 / window.fps)
     }
     // 载入所有图片后，再执行
     var names = Object.keys(images)
@@ -55,7 +55,6 @@ var Game = function(fps, images, runCallback) {
             // imgs.push(img)
             loads.push(1)
             // log('g.imgs.length', g.imgs, names.length)
-            // log('length', loads.length, names.length)
             if (loads.length == names.length) {
                 g.run()
                 log('or g.imgs', g.imgs)
@@ -76,9 +75,11 @@ var Game = function(fps, images, runCallback) {
 
     g.run = function() {
         runCallback()
-        setTimeout(function() {
-            runLoop()
-        }, 1000 / fps)
+        runLoop()
+        // setTimeout(function() {
+        //     log('diaoyong')
+        //     runLoop()
+        // }, 1000 / fps)
     }
     return g
 }
