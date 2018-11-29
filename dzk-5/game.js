@@ -1,5 +1,6 @@
 var Game = function(fps, images, runCallback) {
     var g = {
+        scene: null,
         actions: {},
         keydowns: {},
         imgs: {},
@@ -21,8 +22,14 @@ var Game = function(fps, images, runCallback) {
     g.registerAction = function(key, callback) {
         g.actions[key] = callback
     }
+    g.update = function() {
+        g.scene.update()
+    }
+    g.draw = function() {
+        g.scene.draw()
+    }
     var runLoop = function() {
-        log('fps', window.fps)
+        // log('fps', window.fps)
         var actions = Object.keys(g.actions)
         for (var i = 0; i < actions.length; i++) {
             var key = actions[i]
@@ -30,6 +37,7 @@ var Game = function(fps, images, runCallback) {
                 g.actions[key]()
             }            
         }
+        // log('g.update', g.scene)
         g.update()
         // clear
         context.clearRect(0, 0, canvas.width, canvas.height)
@@ -56,14 +64,14 @@ var Game = function(fps, images, runCallback) {
             loads.push(1)
             // log('g.imgs.length', g.imgs, names.length)
             if (loads.length == names.length) {
-                g.run()
+                runCallback(g)
                 log('or g.imgs', g.imgs)
             }
         }
     }
 
     g.imgByName = function(name) {
-        log('g.imgs', g.imgs)
+        // log('g.imgs', g.imgs)
         var img = g.imgs[name]
         var image = {
             image: img,
@@ -73,13 +81,16 @@ var Game = function(fps, images, runCallback) {
         return image
     }
 
-    g.run = function() {
-        runCallback()
+    g.runWithScene = function(scene) {
+        // log('runWithScene')
+        g.scene = scene
         runLoop()
-        // setTimeout(function() {
-        //     log('diaoyong')
-        //     runLoop()
-        // }, 1000 / fps)
+        log('runWithScene runLoop')
     }
+
+    g.replaceScene = function(scene) {
+        g.scene = scene
+    }
+
     return g
 }

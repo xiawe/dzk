@@ -4,14 +4,14 @@ var loadLevel = function(k, game) {
     var blocks = []
     for (var i = 0; i < p.length; i++) {
         var block = Block(p[i], game) 
-        log(i, block)
+        // log(i, block)
         blocks.push(block)           
     }
     return blocks
 }
 
 var blocks = []
-var enableDebugMode = function(enable, game) {
+var enableDebugMode = function(enable, game, ball) {
     if (!enable) {
         return
     }
@@ -25,6 +25,7 @@ var enableDebugMode = function(enable, game) {
         }
     })
     window.fps = 30
+    // 调整帧率（速度）
     document.querySelector('.slide-control').addEventListener('input', function(event) {
         var input = event.target
         // log('slide input', event, input, input.value)
@@ -38,10 +39,12 @@ var __main = function() {
         ball: 'ball.png',
         block: 'block.png',
     }
-    var scene = Scene(game)
-    var game = Game(30, images, function() {
-        scene.update()
-        scene.draw()
+
+    var game = Game(30, images, function(g) {
+        var s = Scene(g)
+        // log('g', g)
+        g.runWithScene(s)
+        // log('callback scene', g)
     })
 
     enableDebugMode(true, game)

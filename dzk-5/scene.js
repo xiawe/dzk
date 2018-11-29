@@ -1,5 +1,7 @@
 var Scene = function(game) {
-    var s = {}
+    var s = {
+        game: game,
+    }
     var paddle = Paddle(game)
     var ball = Ball(game)
     
@@ -15,6 +17,27 @@ var Scene = function(game) {
     game.registerAction('f', function() {
         ball.fire()
     })
+
+    // 拖动球
+    var bMousedown = false
+    window.addEventListener('mousedown', function(event) {
+        log('mousedown', event)
+        bMousedown = true
+    })
+
+    window.addEventListener('mouseup', function() {
+        log('mouseup', event)
+        bMousedown = false
+    })
+
+    document.querySelector('#id-canvas').addEventListener('mousemove', function(event) {
+        if (bMousedown) {
+            log('mousemove', event)
+            ball.x = event.clientX
+            ball.y = event.clientY
+        }
+    })
+    
     s.update = function() {
         if (window.paused) {
             return
@@ -30,6 +53,10 @@ var Scene = function(game) {
                 b.kill()
                 score += 100
             }
+        }
+        if (ball.y > paddle.y) {
+            var end = SceneEnd(game)
+            game.replaceScene(end)
         }
     }
     s.draw = function() {
