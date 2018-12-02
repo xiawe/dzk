@@ -41,7 +41,7 @@ var __main = function() {
     }
 
     var game = Game(30, images, function(g) {
-        var s = Scene(g)
+        var s = new SceneTitle(g)
         // log('g', g)
         g.runWithScene(s)
         // log('callback scene', g)
