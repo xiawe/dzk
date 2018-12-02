@@ -40,8 +40,8 @@ var __main = function() {
         block: 'img/block.png',
     }
 
-    var game = Game.instance(30, images, function(g) {
-        var s = SceneTitle.new(g)
+    var game = Game(30, images, function(g) {
+        var s = Scene(g)
         // log('g', g)
         g.runWithScene(s)
         // log('callback scene', g)
