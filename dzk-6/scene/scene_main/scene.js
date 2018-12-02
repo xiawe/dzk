@@ -26,7 +26,7 @@ var Scene = function(game) {
     })
 
     window.addEventListener('mouseup', function() {
-        log('mouseup', event)
+        // log('mouseup', event)
         bMousedown = false
     })
 
