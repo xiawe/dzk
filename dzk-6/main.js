@@ -41,12 +41,20 @@ var __main = function() {
     }
 
     var game = Game.instance(30, images, function(g) {
-        var s = new SceneTitle(g)
+        var s = SceneTitle.new(g)
         // log('g', g)
         g.runWithScene(s)
         // log('callback scene', g)
     })
 
+    // var game = Game(30, images, function(g) {
+    //     var s = SceneTitle.new(g)
+    //     // log('g', g)
+    //     g.runWithScene(s)
+    //     // log('callback scene', g)
+    // })
+
+    log('Game', game)
     enableDebugMode(true, game)
 }
 __main()

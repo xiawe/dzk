@@ -59,7 +59,9 @@ var Scene = function(game) {
             game.replaceScene(end)
         }
     }
+    log('s draw', game)
     s.draw = function() {
+        // log('s draw', game)
         game.drawImg(paddle)
         game.drawImg(ball)
         // game.drawImg(block)

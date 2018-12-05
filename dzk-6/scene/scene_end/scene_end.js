@@ -18,7 +18,7 @@
 class SceneEnd extends SceneTitle{
     constructor(game) {
         super(game)
-        this.game = game
+        // this.game = game
         game.registerAction('r', function() {
             // var s = new SceneTitle(game)
             var s = SceneTitle.new(game)

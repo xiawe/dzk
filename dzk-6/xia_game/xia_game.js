@@ -1,12 +1,14 @@
 class Game{
     constructor(fps, images, runCallback) {
-        this.fps = fps
+        window.fps = fps
         this.images = images
         this.runCallback = runCallback
+
         this.keydowns = {}
         this.scene = null
         this.imgs = {}
         this.actions = {}
+
         this.canvas = document.querySelector('#id-canvas')
         this.context = this.canvas.getContext('2d')
 
@@ -56,6 +58,26 @@ class Game{
             g.runLoop()
         }, 1000 / window.fps)
     }
+
+    imgByName(name) {
+        // log('g.imgs', g.imgs)
+        var img = this.imgs[name]
+        var image = {
+            image: img,
+            w: img.width,
+            h: img.height,
+        }
+        return image
+    }
+    runWithScene(scene) {
+        this.scene = scene
+        this.runLoop()
+    }
+    replaceScene(scene) {
+        this.scene = scene
+        // log('replaceScene', scene)
+    }
+    
     init() {
         var g = this
         // 载入所有图片后，再执行
@@ -80,23 +102,6 @@ class Game{
                 }
             }
         }
-    }
-    imgByName(name) {
-        // log('g.imgs', g.imgs)
-        var img = this.imgs[name]
-        var image = {
-            image: img,
-            w: img.width,
-            h: img.height,
-        }
-        return image
-    }
-    runWithScene(scene) {
-        this.scene = scene
-        this.runLoop()
-    }
-    replaceScene(scene) {
-        this.scene = scene
     }
 }
 
